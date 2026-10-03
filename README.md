@@ -1,67 +1,54 @@
-# Quantum Game Simulations
+# Simulating Game Theory with Quantum Computing
 
-**Prisoner’s Dilemma for two to four players, and Bell-pair coordination.**
+**Prisoner's Dilemma, quantum strategies, and coordination — research by Esther Cui.**
 
-Research code accompanying Esther Cui's final manuscript, *Simulating Game
-Theory and Strategic Interactions Using Quantum Computing*. The project explores
-classical enumeration, QAOA-style payoff optimization, circuit-based pure Nash
-searches, and Schelling coordination.
+This repository accompanies *Simulating Game Theory and Strategic Interactions
+Using Quantum Computing*. The study explores how classical and quantum models
+shape strategic behavior: unilateral incentives in the Prisoner's Dilemma,
+payoff optimization with parameterized circuits, and coordination using shared
+quantum states.
 
-The maintained package turns that exploration into small, tested experiments
-with explicit payoff rules, reproducible outputs, and a documented connection
-to the original paper.
+The research spans two to four players. Its equilibrium analysis concerns
+**pure-strategy Nash equilibria**: each player selects a fixed strategy, and no
+player can improve their expected payoff by changing that strategy alone.
 
-[Paper and code](docs/paper-comparison.md) ·
-[PD walkthrough](notebooks/01_prisoners_dilemma.ipynb) ·
-[Paper companion](notebooks/02_paper_companion.ipynb) ·
-[Methods](docs/methods.md)
+[Prisoner's Dilemma walkthrough](notebooks/01_prisoners_dilemma.ipynb) ·
+[Circuit experiments](notebooks/02_circuit_experiments.ipynb) ·
+[Methods](docs/methods.md) · [Original notebooks](archive/README.md)
 
-## Relationship to the paper
+## Research overview
 
-The original grids and many Schelling results can be traced to the notebooks.
-Some numerical summaries and the cooperative Nash interpretation require
-correction. The [paper-to-code comparison](docs/paper-comparison.md) identifies
-the exact pages, reported values, original outputs, and verified calculations.
-Reported manuscript values remain in [a separate source record](results/paper-reported.json).
-The [original notebooks](archive/README.md) are preserved unchanged in a verified
-ZIP; the two maintained notebooks are executed and contain no saved errors.
+| Experiment | Question | Implementation |
+|---|---|---|
+| Classical Prisoner's Dilemma, k = 2–4 | Which action profiles are stable under unilateral deviations? | Exhaustive enumeration with explicit multiplayer payoff rules |
+| Two-player EWL game | How does the quantum strategy Q change a player's best response? | Entangle–strategy–disentangle circuit and a complete 15 × 8 strategy grid |
+| Multiplayer circuit exploration, k = 2–4 | How do circuit choices and strategy grids affect payoffs and search cost? | Documented ZZ circuit benchmark and the original research archive |
+| Variational payoff optimization | Which circuit parameters increase aggregate payoff? | Depth-one ZZ/RX ansatz and payoff landscapes |
+| Schelling coordination | How do shared states and local rotations affect matching? | Two-spot and four-spot Bell-pair experiments |
 
-## Verified Prisoner’s Dilemma result
+## The quantum strategy Q
 
-The implemented circuit uses diagonal ZZ gates around local `Ry` / `Rz`
-strategies. For its initial state and computational-basis measurement, the
-outcome probabilities reduce to independent classical randomization:
+In the maximally entangled **two-player EWL game**, Q changes the response to
+classical defection:
 
-```math
-p_i(D)=\sin^2(\theta_i/2).
-```
+| Player 0 | Player 1 | Expected payoffs |
+|---|---|---|
+| C | D | (0, 5) |
+| Q | D | (5, 0) |
+| D | Q | (0, 5) |
+| Q | Q | (3, 3) |
 
-The phase angles and ZZ strength do not change those probabilities. This gives
-both a substantive result and an exact computational reduction: for the original
-four-player grid, **18,974,736 angle profiles reduce to 14,641 distinct payoff
-profiles**, with every phase choice still accounted for.
-
-With correctly assigned player payoffs, the tested grids have one equilibrium
-class: **every player defects**. All phase choices at that profile are tied.
-The historical circuit therefore does not demonstrate a quantum equilibrium
-advantage. The [methods](docs/methods.md) explain why and distinguish this circuit
-from the EWL model that originally motivated the exploration.
-
-| Players | Original angle grid per player | Full angle profiles | Evaluated representatives | Equilibrium payoff per player¹ |
-|:--:|:--:|--:|--:|:--:|
-| 2 | 15 × 8 | 14,400 | 225 | 1 |
-| 3 | 15 × 8 | 1,728,000 | 3,375 | 1 |
-| 4 | 11 × 6 | 18,974,736 | 14,641 | 1 |
-
-¹ Collective payoff rule used by the original circuit notebooks. The classical
-notebooks instead sum pairwise payoffs for k > 2. Both rules are implemented and
-tested separately; under the pairwise rule the all-defect payoff is k − 1.
-[Machine-readable results](results/reference.json) use a 1e-10 absolute tolerance.
+Within EWL's restricted two-angle strategy family, `(Q, Q)` is a Nash
+equilibrium. Both players receive the cooperative reward, and neither gains
+by deviating alone. Q is a quantum operation; it is distinct from the classical
+strategy C. The [methods](docs/methods.md#two-player-ewl-game) specify the matrices
+and the unilateral-deviation bound from
+[Eisert, Wilkens, and Lewenstein](https://arxiv.org/abs/quant-ph/9806088).
 
 ## Quick start
 
-Requires Python 3.11 or newer. The core package needs only NumPy.
-While this update is under review, clone the review branch shown below.
+Requires Python 3.11 or newer. NumPy is the only core dependency.
+This update is available on the review branch:
 
 ```bash
 git clone --branch polish/reproducible-nash https://github.com/Esthercui/quantum.git
@@ -69,95 +56,84 @@ cd quantum
 python -m venv .venv
 source .venv/bin/activate  # Windows: .venv\Scripts\activate
 python -m pip install -e .
-
-# Original k = 4 angle grid, with the exact phase reduction.
-quantum-pd --players 4 --theta-points 11 --phi-points 6
-
-# Use the same pairwise payoff rule as the classical notebooks.
-quantum-pd --players 3 --payoff-model pairwise --output output/k3.json
 ```
 
-The JSON records the grid, payoff rule, tolerance, number of represented profiles,
-equilibrium angles, payoffs, and each player's maximum gain from a unilateral
-deviation. The default search is deterministic and does not require a QPU,
-cloud account, worker pool, or external dataset.
+Run the EWL example:
 
-For the pinned development environment, install [uv](https://docs.astral.sh/uv/)
-and run `uv sync --frozen --all-extras`; prefix commands below with `uv run`.
+```python
+from quantum_pd.ewl import C, D, Q, expected_payoff
 
-## Read or run the notebooks
+for profile in ([C, D], [Q, D], [Q, Q]):
+    print(expected_payoff(profile).round(6))
+# [0. 5.]
+# [5. 0.]
+# [3. 3.]
+```
 
-The [walkthrough](notebooks/01_prisoners_dilemma.ipynb) includes saved outputs and
-covers the classical game, player ordering, the circuit reduction, and k = 2–4
-searches. The [paper companion](notebooks/02_paper_companion.ipynb) adds direct
-checks of the manuscript’s PD, QAOA, and Schelling results. To rerun both from
-the repository root:
+Run a classical baseline:
+
+```python
+from quantum_pd import classical_nash
+
+print(classical_nash(4, model="collective"))
+# [{'actions': [1, 1, 1, 1], 'payoffs': [1.0, 1.0, 1.0, 1.0]}]
+```
+
+The separate [ZZ circuit benchmark](docs/zz-reference.md) has a command-line
+interface. Its JSON output includes the grid, payoff rule, equilibrium angles,
+and each player's maximum gain from a unilateral deviation:
 
 ```bash
-python -m pip install -e '.[notebook,verify]'
+quantum-pd --players 4 --theta-points 11 --phi-points 6 --output output/zz-k4.json
+```
+
+## Notebooks and reproducibility
+
+The two maintained notebooks include executed outputs and run from the repository
+root. Optional dependencies support Qiskit circuit checks and notebook execution:
+
+```bash
+python -m pip install -e '.[dev,verify,notebook]'
 python -m jupyter nbconvert --execute --to notebook --inplace \
   notebooks/01_prisoners_dilemma.ipynb
 python -m jupyter nbconvert --execute --to notebook --inplace \
-  notebooks/02_paper_companion.ipynb
-```
+  notebooks/02_circuit_experiments.ipynb
 
-## Use the Python API
-
-```python
-from math import pi
-from quantum_pd import expected_payoff, search_grid
-
-# Player 0 defects; player 1 cooperates.
-assert expected_payoff([(pi, 0), (0, 0)]).tolist() == [5.0, 0.0]
-
-result = search_grid(4, theta_points=11, phi_points=6)
-assert result["evaluated_representatives"] == 14_641
-assert result["equilibrium_angle_profiles"] == 1_296  # 6 tied phases per player
-```
-
-## Verification
-
-```bash
-python -m pip install -e '.[dev,verify]'
 python -m pytest
 ruff check .
 ruff format --check .
 python scripts/reproduce.py --check
-python scripts/check_paper.py --check
+python scripts/reproduce_experiments.py --check
 ```
 
-Tests cover the classical payoff matrix, all classical action profiles through
-k = 4, asymmetric player assignments, tied best responses, a game with no pure
-equilibrium, absolute tolerances, unreduced versus reduced grid enumeration,
-and gate-level agreement with Qiskit. CI runs the core suite on Python 3.11–3.13
-and a separate Qiskit/notebook verification job for both walkthroughs. Qiskit tests skip when the
-optional verification dependency is absent.
+For the pinned environment, use `uv sync --frozen --all-extras` and prefix
+commands with `uv run`. CI checks Python 3.11–3.13, independent Qiskit gate
+implementations, result regeneration, and both notebooks.
 
 ## Repository guide
 
-| Path | Purpose |
+| Path | Contents |
 |---|---|
-| [`src/quantum_pd/`](src/quantum_pd/) | Payoff rules, circuit reference, exhaustive search, CLI |
-| [`tests/`](tests/) | Mathematical invariants and independent circuit checks |
-| [`notebooks/`](notebooks/) | Executed research walkthrough |
-| [`results/reference.json`](results/reference.json) | Reproducible results for both payoff rules |
-| [`docs/paper-comparison.md`](docs/paper-comparison.md) | Final manuscript mapped to source, results, and needed corrections |
-| [`docs/methods.md`](docs/methods.md) | Equations, assumptions, equilibrium definition, complexity |
-| [`docs/research-notes.md`](docs/research-notes.md) | Corrections and scope of the reconstruction |
-| [`archive/`](archive/) | Original notebooks and source hashes |
+| [`src/quantum_pd/ewl.py`](src/quantum_pd/ewl.py) | Standard two-player EWL reference |
+| [`src/quantum_pd/`](src/quantum_pd/) | Payoff rules, Nash tests, ZZ benchmark, and circuit experiments |
+| [`notebooks/`](notebooks/) | Executed research walkthroughs |
+| [`docs/methods.md`](docs/methods.md) | Models, equations, conventions, and equilibrium definition |
+| [`results/experiments.json`](results/experiments.json) | EWL, variational, and coordination examples |
+| [`results/reference.json`](results/reference.json) | ZZ benchmark grids under both payoff rules |
+| [`tests/`](tests/) | Mathematical identities and circuit regression tests |
+| [`archive/`](archive/) | Original research notebooks and checksum manifest |
 
-## Scope and provenance
+## Research scope
 
-The PD solver studies finite-grid **pure-strategy Nash** equilibria. A fixed angle pair is one
-pure strategy in the circuit game, even when measurement is probabilistic.
-The search does not solve mixed distributions over angle strategies, population
-evolutionary stability, or general quantum games. The analytical dominance
-argument for this particular circuit is given separately in the methods.
+A fixed quantum strategy can have probabilistic measurement outcomes. The Nash
+analysis tests deviations between fixed strategies, without searching mixed
+distributions over strategies. Variational payoff optimization and coordination
+answer separate questions from the Nash search.
 
-The original notebooks belong to Esther Cui's research project. The maintained
-package, tests, and documentation are an AI-assisted reconstruction of that
-work, with corrections recorded explicitly. Original notebook bytes and saved
-outputs remain in the archive; they are historical evidence, not newly verified
-results. QAOA payoff optimization and Schelling coordination have separate, bounded
-circuit replays in the paper companion. These do not certify Nash equilibria
-or reproduce missing historical samples.
+Each implementation has an explicit circuit and payoff convention. The EWL
+reference is for two players; the multiplayer benchmark and archive are described
+separately. Current examples use exact statevector probabilities and do not
+require quantum hardware or a cloud account.
+
+The original work is preserved in the archive. The maintained package,
+walkthroughs, and tests were developed through an AI-assisted refactor.

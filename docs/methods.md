@@ -1,154 +1,130 @@
-# Model and methods
+# Models and methods
 
-For the final manuscript comparison, including QAOA and Schelling experiments,
-see [Paper and code](paper-comparison.md). This page describes the verified
-Prisoner's Dilemma implementation.
+The study combines Prisoner's Dilemma equilibrium analysis, variational payoff
+optimization, and Schelling coordination. This page defines the models and
+conventions used by the maintained examples.
 
-## Question and scope
+## Classical Prisoner's Dilemma
 
-For k ∈ {2, 3, 4}, fix each player's strategy and ask whether a unilateral
-change increases that player's expected payoff. The numerical search checks
-all deviations in a finite angle grid. A profile qualifies when every player's
-maximum improvement is at most an absolute tolerance of 1e-10.
+Cooperation is encoded as 0 and defection as 1. Payoffs are ordered by player:
 
-A pure strategy is one fixed pair (θ, φ). Probabilistic measurement of that
-strategy does not make it a mixed strategy over angle pairs. The package does
-not search distributions over strategies or model evolutionary populations.
-
-## Payoffs
-
-Cooperation is 0 and defection is 1. The two-player payoff table is:
-
-| Player 0 / Player 1 | Cooperate | Defect |
+| Player 0 / Player 1 | C | D |
 |---|---|---|
-| Cooperate | (3, 3) | (0, 5) |
-| Defect | (5, 0) | (1, 1) |
+| C | (3, 3) | (0, 5) |
+| D | (5, 0) | (1, 1) |
 
-The archived notebooks use two extensions to more players:
+For k = 2–4, the package provides two explicit payoff rules:
 
-- **Collective**, in the circuit Nash notebooks: every player gets 3 at all-C
-  and 1 at all-D. At any other profile, defectors receive 5 and cooperators 0.
-- **Pairwise**, in the classical notebooks: each player sums the two-player
-  payoff over their k − 1 opponents. There is no averaging or normalization.
+- **Collective:** all-C pays 3 to everyone; all-D pays 1. In a mixed action
+  profile, defectors receive 5 and cooperators receive 0.
+- **Pairwise:** each player sums the two-player payoff over their k − 1 opponents.
 
 For example, `(D, C, C)` pays `(5, 0, 0)` collectively and `(10, 3, 3)` pairwise.
-Comparisons must use the same rule. Both have all-D as the unique classical
-pure equilibrium, paying 1 or k − 1 per player, respectively.
+Choose the same rule for the baseline and circuit being compared.
 
-## Circuit actually implemented
+## Two-player EWL game
 
-The maintained model follows `quantum_pd_k2k3.ipynb` and `quantum_pd_k4.ipynb`:
+`quantum_pd.ewl` implements the restricted two-angle game of
+[Eisert, Wilkens, and Lewenstein, *Quantum Games and Quantum Strategies*](https://arxiv.org/abs/quant-ph/9806088),
+using the conventions in equations (3), (5), and (7) of version 4.
 
 ```math
-|\psi_f\rangle=J^\dagger\left(\bigotimes_i U_i\right)J|0\rangle^{\otimes k},
+U(\theta,\phi)=\begin{pmatrix}
+e^{i\phi}\cos(\theta/2)&\sin(\theta/2)\\
+-\sin(\theta/2)&e^{-i\phi}\cos(\theta/2)
+\end{pmatrix},\qquad
+0\leq\theta\leq\pi,\quad 0\leq\phi\leq\pi/2.
 ```
 
 ```math
-J=\prod_{i\lt j}\exp(-i\gamma Z_iZ_j),\qquad
-U_i=R_z(\phi_i)R_y(\theta_i).
+C=U(0,0)=I,\qquad D=U(\pi,0)=iY,\qquad
+Q=U(0,\pi/2)=iZ.
 ```
 
-The allowed ranges are θ ∈ [0, π], φ ∈ [0, π/2], γ ∈ [0, π/2]. The notebook
-sequence `cx(i,j); rz(2*gamma,j); cx(i,j)` is a ZZ rotation, as follows from
-[IBM's RZZ matrix](https://quantum.cloud.ibm.com/docs/en/api/qiskit/qiskit.circuit.library.RZZGate).
-It is not the XX entangler described in some original comments. At the historical
-γ = π/2, each pair gate is `-i Z⊗Z`, itself a product of local operators.
-
-This implementation documents the original gate sequence rather than silently
-substituting a different quantum game. The foundational EWL paper is
-[Eisert, Wilkens, and Lewenstein, *Quantum Games and Quantum Strategies*,
-Phys. Rev. Lett. 83, 3077 (1999)](https://arxiv.org/abs/quant-ph/9806088).
-Its strategy and entangler conventions must be implemented and validated
-separately before transferring its equilibrium claims to a program.
-
-## Exact reduction of the measurement probabilities
-
-`J` is diagonal, so its action on the initial all-zero basis state is only a
-global phase. Each local strategy then produces
+The protocol prepares an entangled state, applies each player's strategy, and
+then applies the inverse entangler before measurement:
 
 ```math
-R_z(\phi_i)R_y(\theta_i)|0\rangle
-=e^{-i\phi_i/2}\cos(\theta_i/2)|0\rangle
-+e^{i\phi_i/2}\sin(\theta_i/2)|1\rangle.
+J=\exp\left(-\frac{i\gamma}{2}D\otimes D\right),\qquad
+|\psi_f\rangle=J^\dagger(U_0\otimes U_1)J|00\rangle.
 ```
 
-The final `J†` is also diagonal and changes no computational-basis probability.
-Consequently, for outcome b in player order,
+Here the equation uses player-ordered tensor factors. Arrays in the implementation
+use Qiskit's little-endian order, so their tensor product is `U_1 ⊗ U_0`.
+Expected payoff is the sum of each outcome's payoff weighted by its Born
+probability. The default γ = π/2 gives maximal entanglement.
+
+A gate-level implementation uses `ryy(-gamma)` for J. Each local strategy is
+`rz(-phi)`, then `ry(-theta)`, then `rz(-phi)`. The closing gate is `ryy(gamma)`.
+Tests compare that Qiskit sequence with the independent NumPy matrices.
+
+At maximal entanglement, `(Q, D)` pays `(5, 0)` and `(Q, Q)` pays `(3, 3)`.
+If player 1 holds Q fixed, player 0's expected payoff satisfies:
 
 ```math
-P(b)=\prod_i\begin{cases}
-\cos^2(\theta_i/2),&b_i=0,\\
-\sin^2(\theta_i/2),&b_i=1.
-\end{cases}
+u_0\bigl(U(\theta,\phi),Q\bigr)
+=\cos^2(\theta/2)\bigl(3\sin^2\phi+\cos^2\phi\bigr)\leq 3.
 ```
 
-This is independent of every φ and γ in the stated domain. It does not assert
-that the final state is separable for every γ; diagonal gates can change
-entanglement without changing these measurement probabilities.
+By symmetry the same holds for player 1. This establishes `(Q, Q)` as a Nash
+equilibrium throughout the stated strategy family. The notebook also enumerates
+all 14,400 joint profiles on the 15 × 8 grid. Phase angles are fully enumerated.
+The analytical bound concerns this strategy family and this two-player game.
 
-Expected payoff is `Σ_b P(b) payoff_i(b)`. `game.statevector` retains the complex
-phases as a reference; `game.probabilities` uses the product formula. The tests
-compare both with an independent Qiskit gate sequence at three γ values and
-asymmetric random strategies for all three player counts.
+## Nash test and player ordering
 
-## Player ordering
+A fixed angle pair is one pure strategy, even if measurement is probabilistic.
+For player i, hold every other strategy fixed and compute the best attainable
+expected payoff over i's allowed strategies. The difference between that payoff
+and the current payoff is the player's regret. A profile is an approximate
+Nash equilibrium when every regret is at most the absolute tolerance.
 
-Player i controls qubit i. At statevector index x, that player's action is
-`(x >> i) & 1`. Qiskit displays bitstrings as `q_(k-1)...q_0`, so displayed strings
-must be reversed before interpreting them as player-ordered payoff vectors.
-See [IBM's bit-ordering guide](https://quantum.cloud.ibm.com/docs/en/guides/bit-ordering).
+`pure_nash_mask` keeps every tied best response and defaults to `atol=1e-10`.
+A finite-grid result certifies deviations on that grid. A continuous-space
+claim requires a separate argument, such as the EWL bound above.
 
-An essential regression case is player 0 defecting while player 1 cooperates:
-angles `[(π, 0), (0, 0)]` produce basis index 1 (displayed `01`) and payoff
-`(5, 0)`. The old left-to-right string mapping assigned this payoff backwards.
+Player i controls qubit i. At statevector index x, their measured action is
+`(x >> i) & 1`. Displayed Qiskit strings run from the highest qubit to qubit 0;
+see [IBM's bit-ordering guide](https://quantum.cloud.ibm.com/docs/en/guides/bit-ordering).
+The payoff vector always runs from player 0 upward.
 
-## Search and equilibrium certificate
+## Multiplayer circuit benchmark
 
-Let nθ and nφ denote grid sizes, with endpoints included. A single-point φ grid
-means φ = 0. For each θ profile, all nφ^k phase profiles have identical payoffs
-and identical incentives to deviate. The search therefore enumerates nθ^k
-representatives and reports their phase multiplicity explicitly.
+The `game` module, `search_grid`, and `quantum-pd` CLI evaluate the pairwise ZZ
+circuit for k = 2–4. Its gate definition, exact probability reduction, grid
+sizes, and computational cost are given in the [ZZ reference](zz-reference.md).
+The reduction is specific to that circuit. The EWL example uses its own complete
+payoff tensor with the general Nash test.
 
-The payoff tensor has one strategy axis per player and a final payoff axis.
-For player i, reducing their strategy axis by `max` yields their best attainable
-payoff with opponents fixed. Regret is that value minus current payoff. A profile
-is returned if every regret is ≤ `atol`. No arbitrary `argmax` tie-breaking is used.
+## Variational payoff optimization
 
-Output includes all qualifying equivalence classes, their representative angles
-(φ = 0), payoffs, regrets, and the count of represented angle profiles. Under the
-default tolerance, the reference searches find one class, θ_i = π for every
-player. The respective phase multiplicities are 8² = 64, 8³ = 512, and 6⁴ = 1,296.
-These are strategically equivalent parameter choices, not distinct behaviors.
+`experiments.qaoa_circuit` prepares each qubit with H, applies a uniform pairwise
+ZZ layer, then applies RX mixing. For depth one, each pair uses
+`cx(i,j); rz(2*gamma,j); cx(i,j)`, followed by `rx(2*beta)` on each qubit.
+The examples evaluate aggregate pairwise payoff over a 7 × 7 parameter grid.
+This is a payoff landscape; a parameter optimum is evaluated separately from
+individual-player Nash incentives.
 
-A finite-grid certificate alone does not prove a continuous-space equilibrium.
-For this particular model there is also a separate analytical argument:
+## Schelling coordination
 
-- In the collective game, choosing D instead of C improves payoff by 2 if all
-  opponents cooperate, 1 if all defect, and 5 otherwise. Every difference is
-  positive, so the expected difference is positive against any independent
-  opponent randomization.
-- In the pairwise game, each opponent contributes a strictly positive gain
-  (2 against C, 1 against D); summing preserves strict dominance.
+The two-spot protocol prepares a Bell pair, applies local RY rotations, and
+measures whether both players choose the same spot. With local angles θA and θB:
 
-Thus payoff strictly increases with one's defection probability. In the stated
-θ domain, the optimum is θ = π regardless of opponents. All-D, with arbitrary
-phases, is the only exact equilibrium behavior even in the continuous angle
-space. Large numerical tolerances may also admit approximate equilibria.
+```math
+P(\mathrm{match})=\cos^2\left(\frac{\theta_A-\theta_B}{2}\right).
+```
 
-## Cost and numerical limits
+The optional inverse circuit applies CX and H jointly before measurement; that
+variant has match probability 1 for these rotations. Four spots use two Bell
+pairs and compare the players' two-bit registers. An independent classical
+baseline has match probability `pA*pB + (1-pA)*(1-pB)` for two spots, and 1/4
+for uniform independent choices among four spots. Shared randomness is a
+different classical resource and can also provide perfect coordination.
 
-The reduction evaluates nθ^k representatives instead of `(nθ nφ)^k` full angle
-profiles. The implemented outcome accumulation costs O(k 2^k nθ^k) arithmetic
-and uses O(k nθ^k) tensor storage. Search cost still grows exponentially with k;
-this package intentionally limits k to 2–4. A default limit of one million
-representatives rejects oversized requests before allocation.
+## Numerical conventions
 
-The original four-player grid requires 14,641 representatives instead of
-18,974,736 angle profiles, a factor of 1,296 in profile count. This is a
-model-specific algebraic reduction, not a hardware speedup or a measured runtime
-ratio. No historical timing comparison is claimed.
-
-Calculations use deterministic float64 arithmetic without shot sampling. All
-angles, payoffs, and tolerances are validated. JSON results are generated from
-source and include a source digest; `scripts/reproduce.py --check` verifies the
-saved artifact. The original missing pickle is not an input to these new runs.
+Maintained examples use float64 statevector calculations without shot sampling.
+Inputs and angle domains are validated. `results/experiments.json` records the
+EWL, variational, and coordination examples; `results/reference.json` records
+the ZZ benchmark with its source digest. The reproduction scripts regenerate
+these artifacts and provide `--check` for verification.

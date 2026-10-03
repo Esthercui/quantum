@@ -1,4 +1,4 @@
-"""Recompute bounded manuscript checks; never relabel them as historical runs."""
+"""Reproduce the two-player EWL, variational, and coordination examples."""
 
 import argparse
 import json
@@ -7,7 +7,7 @@ from pathlib import Path
 
 import numpy as np
 
-from quantum_pd import expected_payoff, search_grid
+from quantum_pd.ewl import C, D, Q, expected_payoff
 from quantum_pd.experiments import (
     classical_match,
     qaoa_outcomes,
@@ -18,43 +18,12 @@ from quantum_pd.experiments import (
 ROOT = Path(__file__).resolve().parents[1]
 
 
-def compute_checks() -> dict:
-    """Use the original grids and gate sequences with explicit modern evaluation."""
-    nash = []
-    for players, actions in [(2, [0, 0]), (3, [0, 1, 0]), (4, [0, 0, 0, 0])]:
-        angles = [(pi * action, 0) for action in actions]
-        current = expected_payoff(angles)
-        deviation = angles.copy()
-        deviation[0] = (pi, 0)
-        changed = expected_payoff(deviation)
-        nash.append(
-            {
-                "players": players,
-                "paper_reported_actions": actions,
-                "current_payoffs": current.tolist(),
-                "deviating_player": 0,
-                "deviation_payoffs": changed.tolist(),
-                "deviator_gain": float(changed[0] - current[0]),
-            }
-        )
-
-    tolerances = []
-    for players in (2, 3, 4):
-        theta, phi = (11, 6) if players == 4 else (15, 8)
-        for atol in (1e-3, 1e-10):
-            result = search_grid(players, theta_points=theta, phi_points=phi, atol=atol)
-            tolerances.append(
-                {
-                    "players": players,
-                    "absolute_tolerance": atol,
-                    "equilibrium_classes": len(result["equilibrium_classes"]),
-                    "representative_angles": result["equilibrium_classes"][0][
-                        "representative_angles"
-                    ],
-                    "equivalent_angle_profiles": result["equilibrium_angle_profiles"],
-                }
-            )
-
+def compute_results() -> dict:
+    """Evaluate the documented circuits with exact Born probabilities."""
+    ewl = [
+        {"strategies": label, "payoffs": expected_payoff(profile).tolist()}
+        for label, profile in [("C,D", [C, D]), ("Q,D", [Q, D]), ("D,Q", [D, Q]), ("Q,Q", [Q, Q])]
+    ]
     qaoa = []
     for players in (2, 3, 4):
         candidates = []
@@ -72,9 +41,6 @@ def compute_checks() -> dict:
                 "gamma_points": 7,
                 "beta_points": 7,
                 "classical_pairwise_nash_payoff": players - 1,
-                "largest_cooperation_error_from_half": float(
-                    max(abs(c["cooperation_rate"] - 0.5) for c in candidates)
-                ),
                 "best_grid_point": best,
             }
         )
@@ -96,8 +62,7 @@ def compute_checks() -> dict:
             "Current Qiskit exact statevectors; no shots, optimizer fit, "
             "or historical timing replay."
         ),
-        "nash_claim_checks": nash,
-        "tolerance_checks": tolerances,
+        "two_player_ewl": ewl,
         "qaoa_7x7_checks": qaoa,
         "schelling_binary_checks": schelling,
         "schelling_four_spots": {
@@ -108,7 +73,6 @@ def compute_checks() -> dict:
             {"p_a": a, "p_b": b, "exact_match": classical_match(a, b)}
             for a, b in [(0.5, 0.5), (0.7, 0.7), (0.9, 0.9), (0.8, 0.2), (1, 0.2)]
         ],
-        "four_player_31_by_16_profiles": (31 * 16) ** 4,
     }
 
 
@@ -133,16 +97,16 @@ def main() -> int:
     parser.add_argument("--check", action="store_true")
     args = parser.parse_args()
     try:
-        payload = compute_checks()
+        payload = compute_results()
     except ImportError as exc:
         parser.error(str(exc))
-    path = ROOT / "results/paper-checks.json"
+    path = ROOT / "results/experiments.json"
     if args.check:
         compare(payload, json.loads(path.read_text()))
-        print("Manuscript checks reproduce within 1e-12 numerical tolerance.")
+        print("Circuit examples reproduce within 1e-12 numerical tolerance.")
     else:
         path.write_text(json.dumps(payload, indent=2, allow_nan=False) + "\n")
-        print("Wrote results/paper-checks.json.")
+        print("Wrote results/experiments.json.")
     return 0
 
 

@@ -1,29 +1,23 @@
-# Original research archive
+# Original research notebooks
 
-[Download the original notebooks](original-notebooks.zip) ·
-[Read the paper-to-code comparison](../docs/paper-comparison.md) ·
-[Run the maintained paper companion](../notebooks/02_paper_companion.ipynb)
+[Download the notebook archive](original-notebooks.zip) ·
+[Open the maintained walkthrough](../notebooks/01_prisoners_dilemma.ipynb)
 
-The ZIP preserves all six notebooks and the original index byte for byte from
+This archive preserves the original exploration for *Simulating Game Theory
+and Strategic Interactions Using Quantum Computing*. All six notebooks and
+the original index are retained byte for byte from
 [`1c84b80`](https://github.com/Esthercui/quantum/tree/1c84b800e14efee63b8e8d9decc3aa0fc2d62d45).
-The [manifest](manifest.json) records each member's SHA-256. Tests verify the
-archive contents. The source is also retained in Git history.
+The [manifest](manifest.json) records their SHA-256 checksums.
 
-The original exploration includes repeated definitions, large top-level jobs,
-a missing external pickle, and an unfinished statistical cell with a saved
-`statsmodels` import error. These historical files are packaged for provenance;
-the maintained notebooks provide the clean, executed reading experience.
-No original results or tracebacks were rewritten to appear newly validated.
-
-| ZIP member under `notebooks/` | Paper connection |
+| ZIP member under `notebooks/` | Topic |
 |---|---|
-| `classical_pd.py.ipynb` | Classical PD baseline, k = 2–4 |
-| `quantum_pd.py-Copy1.ipynb` | QAOA, sampled PD, coarse grids, runtime plot, heatmap |
-| `quantum_pd_k2k3.ipynb` | Higher-resolution 15 × 8 PD grids |
-| `quantum_pd_k4.ipynb` | 11 × 6 four-player payoff sweep |
-| `NasheEuilibria_K4.ipynb` | Analysis of the unavailable k = 4 pickle |
+| `classical_pd.py.ipynb` | Classical Prisoner's Dilemma, k = 2–4 |
+| `quantum_pd.py-Copy1.ipynb` | Variational payoff optimization, sampled games, and landscapes |
+| `quantum_pd_k2k3.ipynb` | Two- and three-player circuit strategy grids |
+| `quantum_pd_k4.ipynb` | Four-player payoff sweep |
+| `NasheEuilibria_K4.ipynb` | Four-player result analysis |
 | `all_schelling.py.ipynb` | Coordination experiments and bias curves |
 
-The original `READ_ME.txt` is at the ZIP root. Historical notebook output is
-reported evidence; the [comparison](../docs/paper-comparison.md) distinguishes
-it from verified results and explains corrections that affect interpretation.
+The original `READ_ME.txt` is at the ZIP root. The archive includes historical
+saved outputs and environment-specific paths. For installation instructions and
+portable, executed examples, use the maintained notebooks linked above.

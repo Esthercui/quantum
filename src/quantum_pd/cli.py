@@ -10,7 +10,7 @@ from .search import search_grid
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(
-        description="Pure Nash equilibria of the historical PD circuit (k = 2–4)."
+        description="Pure Nash equilibria of the pairwise-ZZ PD circuit (k = 2–4)."
     )
     parser.add_argument("--version", action="version", version=__version__)
     parser.add_argument("--players", type=int, choices=(2, 3, 4), default=4)
@@ -33,6 +33,7 @@ def main(argv: list[str] | None = None) -> int:
     except ValueError as exc:
         parser.error(str(exc))
     result["package_version"] = __version__
+    result["circuit_model"] = "pairwise_zz_ry_rz"
     serialized = json.dumps(result, indent=2, allow_nan=False) + "\n"
     if args.output:
         args.output.parent.mkdir(parents=True, exist_ok=True)

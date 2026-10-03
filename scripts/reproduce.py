@@ -29,6 +29,7 @@ def main() -> int:
             results.append(search_grid(players, theta_points=theta, phi_points=phi, model=model))
     payload = {
         "package_version": __version__,
+        "circuit_model": "pairwise_zz_ry_rz",
         "source_sha256": source_digest(),
         "method": "Exhaustive theta grid with exact phase-equivalence reduction; float64.",
         "results": results,

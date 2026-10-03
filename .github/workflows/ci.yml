@@ -34,7 +34,7 @@ jobs:
       - run: uv sync --frozen --all-extras --python 3.12
       - run: uv run python -m pytest
       - run: uv run python scripts/reproduce.py --check
-      - run: uv run python scripts/check_paper.py --check
+      - run: uv run python scripts/reproduce_experiments.py --check
       - run: |
           for notebook in notebooks/*.ipynb; do
             uv run python -m jupyter nbconvert --execute --to notebook \

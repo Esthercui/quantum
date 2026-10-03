@@ -2,7 +2,7 @@
 
 Player i owns qubit i. Array index x denotes outcome bit i = (x >> i) & 1.
 The circuit is J† (⊗ Rz(phi_i) Ry(theta_i)) J |0...0>, where
-J = exp(-i gamma sum_{i<j} Z_i Z_j). See docs/methods.md for its reduction.
+J = exp(-i gamma sum_{i<j} Z_i Z_j). See docs/zz-reference.md for its reduction.
 """
 
 from itertools import combinations
