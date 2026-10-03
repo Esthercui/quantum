@@ -1,0 +1,40 @@
+{
+  "source_commit": "1c84b800e14efee63b8e8d9decc3aa0fc2d62d45",
+  "files": [
+    {
+      "original_path": "NasheEuilibria_K4.ipynb",
+      "archive_path": "notebooks/NasheEuilibria_K4.ipynb",
+      "sha256": "ddb7d12d0450b14f8bc9e70903193df37b7f0612cb49f7bfd25af42ff477ab39"
+    },
+    {
+      "original_path": "READ_ME.txt",
+      "archive_path": "READ_ME.txt",
+      "sha256": "3ce25559cf6b42b0b150efd55ec24c0ab8cb55dcd5667d617c6b3a4becd9daca"
+    },
+    {
+      "original_path": "all_schelling.py.ipynb",
+      "archive_path": "notebooks/all_schelling.py.ipynb",
+      "sha256": "fd383b08244c91acb63ffadf1ed60add8b768e81c338f2ee845601e7f105ba6f"
+    },
+    {
+      "original_path": "classical_pd.py.ipynb",
+      "archive_path": "notebooks/classical_pd.py.ipynb",
+      "sha256": "0638729a64df7d035a0bc0126d611146b881b0a2d4918966a2715c80871e95d9"
+    },
+    {
+      "original_path": "quantum_pd.py-Copy1.ipynb",
+      "archive_path": "notebooks/quantum_pd.py-Copy1.ipynb",
+      "sha256": "b04a02429b61c030ab2cb062602662624b2f31b3513fee110c75660f079162be"
+    },
+    {
+      "original_path": "quantum_pd_k2k3.ipynb",
+      "archive_path": "notebooks/quantum_pd_k2k3.ipynb",
+      "sha256": "d1a002ef2317085bec8b592c9dd982ff1fce9e2300f39b6c78b19401394e3e69"
+    },
+    {
+      "original_path": "quantum_pd_k4.ipynb",
+      "archive_path": "notebooks/quantum_pd_k4.ipynb",
+      "sha256": "ba8dbd8cec17644cd9affa4500619537133128fede2d9ae2b97d4a826aa76a8e"
+    }
+  ]
+}
