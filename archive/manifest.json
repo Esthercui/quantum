@@ -36,5 +36,6 @@
       "archive_path": "notebooks/quantum_pd_k4.ipynb",
       "sha256": "ba8dbd8cec17644cd9affa4500619537133128fede2d9ae2b97d4a826aa76a8e"
     }
-  ]
+  ],
+  "container": "original-notebooks.zip"
 }

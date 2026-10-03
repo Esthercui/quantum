@@ -1,26 +1,40 @@
-# Quantum Prisoner's Dilemma
+# Quantum Game Simulations
 
-**Pure-strategy Nash equilibrium search for two, three, and four players.**
+**Prisoner’s Dilemma for two to four players, and Bell-pair coordination.**
 
-A computational study of the Prisoner's Dilemma, from exhaustive classical
-baselines to the angle-based circuit explored in the original research notebooks.
-The focus is a precise question: **can any player improve their expected payoff
-by changing only their own strategy?**
+Research code accompanying Esther Cui's final manuscript, *Simulating Game
+Theory and Strategic Interactions Using Quantum Computing*. The project explores
+classical enumeration, QAOA-style payoff optimization, circuit-based pure Nash
+searches, and Schelling coordination.
 
-This repository makes the model explicit, checks every unilateral deviation on
-the chosen grid, and provides a small, reproducible path from circuit to result.
+The maintained package turns that exploration into small, tested experiments
+with explicit payoff rules, reproducible outputs, and a documented connection
+to the original paper.
 
-[Run the walkthrough](notebooks/01_prisoners_dilemma.ipynb) ·
-[Read the methods](docs/methods.md) ·
-[Inspect the original research](archive/README.md)
+[Paper and code](docs/paper-comparison.md) ·
+[PD walkthrough](notebooks/01_prisoners_dilemma.ipynb) ·
+[Paper companion](notebooks/02_paper_companion.ipynb) ·
+[Methods](docs/methods.md)
 
-## What the study establishes
+## Relationship to the paper
+
+The original grids and many Schelling results can be traced to the notebooks.
+Some numerical summaries and the cooperative Nash interpretation require
+correction. The [paper-to-code comparison](docs/paper-comparison.md) identifies
+the exact pages, reported values, original outputs, and verified calculations.
+Reported manuscript values remain in [a separate source record](results/paper-reported.json).
+The [original notebooks](archive/README.md) are preserved unchanged in a verified
+ZIP; the two maintained notebooks are executed and contain no saved errors.
+
+## Verified Prisoner’s Dilemma result
 
 The implemented circuit uses diagonal ZZ gates around local `Ry` / `Rz`
 strategies. For its initial state and computational-basis measurement, the
 outcome probabilities reduce to independent classical randomization:
 
-$$p_i(D)=\sin^2(\theta_i/2).$$
+```math
+p_i(D)=\sin^2(\theta_i/2).
+```
 
 The phase angles and ZZ strength do not change those probabilities. This gives
 both a substantive result and an exact computational reduction: for the original
@@ -47,9 +61,10 @@ tested separately; under the pairwise rule the all-defect payoff is k − 1.
 ## Quick start
 
 Requires Python 3.11 or newer. The core package needs only NumPy.
+While this update is under review, clone the review branch shown below.
 
 ```bash
-git clone https://github.com/Esthercui/quantum.git
+git clone --branch polish/reproducible-nash https://github.com/Esthercui/quantum.git
 cd quantum
 python -m venv .venv
 source .venv/bin/activate  # Windows: .venv\Scripts\activate
@@ -70,16 +85,20 @@ cloud account, worker pool, or external dataset.
 For the pinned development environment, install [uv](https://docs.astral.sh/uv/)
 and run `uv sync --frozen --all-extras`; prefix commands below with `uv run`.
 
-## Read or run the notebook
+## Read or run the notebooks
 
 The [walkthrough](notebooks/01_prisoners_dilemma.ipynb) includes saved outputs and
 covers the classical game, player ordering, the circuit reduction, and k = 2–4
-searches. To rerun it from the repository root:
+searches. The [paper companion](notebooks/02_paper_companion.ipynb) adds direct
+checks of the manuscript’s PD, QAOA, and Schelling results. To rerun both from
+the repository root:
 
 ```bash
-python -m pip install -e '.[notebook]'
+python -m pip install -e '.[notebook,verify]'
 python -m jupyter nbconvert --execute --to notebook --inplace \
   notebooks/01_prisoners_dilemma.ipynb
+python -m jupyter nbconvert --execute --to notebook --inplace \
+  notebooks/02_paper_companion.ipynb
 ```
 
 ## Use the Python API
@@ -104,13 +123,14 @@ python -m pytest
 ruff check .
 ruff format --check .
 python scripts/reproduce.py --check
+python scripts/check_paper.py --check
 ```
 
 Tests cover the classical payoff matrix, all classical action profiles through
 k = 4, asymmetric player assignments, tied best responses, a game with no pure
 equilibrium, absolute tolerances, unreduced versus reduced grid enumeration,
 and gate-level agreement with Qiskit. CI runs the core suite on Python 3.11–3.13
-and a separate Qiskit/notebook verification job. Qiskit tests skip when the
+and a separate Qiskit/notebook verification job for both walkthroughs. Qiskit tests skip when the
 optional verification dependency is absent.
 
 ## Repository guide
@@ -121,13 +141,14 @@ optional verification dependency is absent.
 | [`tests/`](tests/) | Mathematical invariants and independent circuit checks |
 | [`notebooks/`](notebooks/) | Executed research walkthrough |
 | [`results/reference.json`](results/reference.json) | Reproducible results for both payoff rules |
+| [`docs/paper-comparison.md`](docs/paper-comparison.md) | Final manuscript mapped to source, results, and needed corrections |
 | [`docs/methods.md`](docs/methods.md) | Equations, assumptions, equilibrium definition, complexity |
 | [`docs/research-notes.md`](docs/research-notes.md) | Corrections and scope of the reconstruction |
 | [`archive/`](archive/) | Original notebooks and source hashes |
 
 ## Scope and provenance
 
-This is a finite-grid **pure-strategy Nash** study. A fixed angle pair is one
+The PD solver studies finite-grid **pure-strategy Nash** equilibria. A fixed angle pair is one
 pure strategy in the circuit game, even when measurement is probabilistic.
 The search does not solve mixed distributions over angle strategies, population
 evolutionary stability, or general quantum games. The analytical dominance
@@ -137,5 +158,6 @@ The original notebooks belong to Esther Cui's research project. The maintained
 package, tests, and documentation are an AI-assisted reconstruction of that
 work, with corrections recorded explicitly. Original notebook bytes and saved
 outputs remain in the archive; they are historical evidence, not newly verified
-results. QAOA payoff optimization and Schelling coordination experiments remain
-archived as separate explorations.
+results. QAOA payoff optimization and Schelling coordination have separate, bounded
+circuit replays in the paper companion. These do not certify Nash equilibria
+or reproduce missing historical samples.

@@ -1,5 +1,9 @@
 # Research reconstruction notes
 
+For the final manuscript, see [Paper and code](paper-comparison.md). That review
+adds bounded QAOA and Schelling replays while keeping their purposes separate
+from the pure Nash solver.
+
 The project began as exploratory notebooks covering classical Prisoner's
 Dilemma, angle-based quantum circuits, QAOA-style payoff optimization, and
 Schelling coordination. The maintained package focuses on pure Nash equilibria
@@ -29,7 +33,8 @@ coordination question. Neither is part of the current package's result table.
 
 ## What is preserved and what is new
 
-All six source notebooks and the original index are preserved byte for byte
+All six source notebooks and the original index are preserved in
+`archive/original-notebooks.zip` byte for byte
 from commit `1c84b800e14efee63b8e8d9decc3aa0fc2d62d45`, with a hash manifest in
 [`archive/manifest.json`](../archive/manifest.json). Their saved outputs have
 not been rewritten to agree with the corrected implementation.

@@ -1,0 +1,143 @@
+{
+  "status": "Transcribed manuscript claims and historical saved outputs; not verified new results.",
+  "manuscript": {
+    "title": "Simulating Game Theory and Strategic Interactions Using Quantum Computing",
+    "author": "Esther Cui",
+    "pages": 13,
+    "sha256": "46ae001c57f1bb9d275db0be4eb8daaa36029cf83efdd187f9d9e2f2f1d6fcdc"
+  },
+  "table_2_page_6": [
+    {
+      "players": 2,
+      "classical_payoff_per_player": 1.0,
+      "qaoa_payoff_per_player": 2.5,
+      "qaoa_cooperation_percent": 50,
+      "ewl_payoffs": [
+        3.0,
+        3.0
+      ],
+      "ewl_description": "cooperative / Q,Q"
+    },
+    {
+      "players": 3,
+      "classical_payoff_per_player": 1.0,
+      "qaoa_payoff_per_player": 4.68,
+      "qaoa_cooperation_percent": 67,
+      "ewl_payoffs": [
+        0.0,
+        5.0,
+        0.0
+      ],
+      "ewl_description": "two equilibria in table; one profile in prose"
+    },
+    {
+      "players": 4,
+      "classical_payoff_per_player": 1.0,
+      "qaoa_payoff_per_player": 6.73,
+      "qaoa_cooperation_percent": 75,
+      "ewl_payoffs": [
+        3.0,
+        3.0,
+        3.0,
+        3.0
+      ],
+      "ewl_description": "cooperative; many Q-profiles, 30-core run"
+    }
+  ],
+  "table_3_page_7": [
+    {
+      "case": "2x2 unbiased",
+      "classical_match": 0.503,
+      "quantum_with_inverse": 1.0,
+      "quantum_without_inverse": 1.0
+    },
+    {
+      "case": "2x2 shared p=0.7",
+      "classical_match": 0.578,
+      "quantum_with_inverse": 1.0,
+      "quantum_without_inverse": 1.0
+    },
+    {
+      "case": "2x2 shared p=0.9",
+      "classical_match": 0.821,
+      "quantum_with_inverse": 1.0,
+      "quantum_without_inverse": 1.0
+    },
+    {
+      "case": "2x2 individual pA=0.8 pB=0.2 / angle pi/6 vs 0",
+      "classical_match": 0.321,
+      "quantum_with_inverse": 1.0,
+      "quantum_without_inverse": 0.936
+    },
+    {
+      "case": "2x2 individual pi/2 vs 0",
+      "classical_match": null,
+      "quantum_with_inverse": 1.0,
+      "quantum_without_inverse": 0.487
+    },
+    {
+      "case": "2x4 unbiased",
+      "classical_match": 0.252,
+      "quantum_with_inverse": 1.0,
+      "quantum_without_inverse": 1.0
+    }
+  ],
+  "historical_outputs": {
+    "source_commit": "1c84b800e14efee63b8e8d9decc3aa0fc2d62d45",
+    "cell_indexing": "zero-based",
+    "qaoa": {
+      "notebook": "quantum_pd.py-Copy1.ipynb",
+      "k2_cell": 0,
+      "k2_payoffs": [
+        2.48,
+        2.5
+      ],
+      "k3_k4_cell": 1,
+      "k3_payoffs": [
+        4.56,
+        4.58,
+        4.72
+      ],
+      "k4_payoffs": [
+        6.73,
+        7.02,
+        6.85,
+        7.02
+      ]
+    },
+    "high_resolution_grid": {
+      "notebook": "quantum_pd_k2k3.ipynb",
+      "cell": 0,
+      "k2_printed_profiles": 3,
+      "k2_seconds": 11.78982113674283,
+      "k3_printed_profiles": 6,
+      "k3_seconds": 1836.1652032760903
+    },
+    "k4_sweep": {
+      "notebook": "quantum_pd_k4.ipynb",
+      "cell": 0,
+      "profiles": 18974736,
+      "finished_seconds": 3036.22,
+      "pickle_available": false
+    },
+    "k4_analysis": {
+      "notebook": "NasheEuilibria_K4.ipynb",
+      "cell": 0,
+      "saved_profile_count": 30,
+      "shown_payoffs": [
+        3.0000000000000013,
+        3.0000000000000013,
+        3.0000000000000013,
+        3.0000000000000013
+      ]
+    },
+    "schelling": {
+      "notebook": "all_schelling.py.ipynb",
+      "individual_bias_cell": 12,
+      "pi_over_6_without_inverse": 0.934,
+      "pi_over_2_without_inverse": 0.487,
+      "unfinished_stats_cell": 23,
+      "saved_error": "ModuleNotFoundError: statsmodels"
+    }
+  }
+}

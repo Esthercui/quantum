@@ -1,5 +1,9 @@
 # Model and methods
 
+For the final manuscript comparison, including QAOA and Schelling experiments,
+see [Paper and code](paper-comparison.md). This page describes the verified
+Prisoner's Dilemma implementation.
+
 ## Question and scope
 
 For k ∈ {2, 3, 4}, fix each player's strategy and ask whether a unilateral
@@ -35,10 +39,14 @@ pure equilibrium, paying 1 or k − 1 per player, respectively.
 
 The maintained model follows `quantum_pd_k2k3.ipynb` and `quantum_pd_k4.ipynb`:
 
-$$|\psi_f\rangle=J^\dagger\left(\bigotimes_i U_i\right)J|0\rangle^{\otimes k},$$
+```math
+|\psi_f\rangle=J^\dagger\left(\bigotimes_i U_i\right)J|0\rangle^{\otimes k},
+```
 
-$$J=\prod_{i<j}\exp(-i\gamma Z_iZ_j),\qquad
-U_i=R_z(\phi_i)R_y(\theta_i).$$
+```math
+J=\prod_{i\lt j}\exp(-i\gamma Z_iZ_j),\qquad
+U_i=R_z(\phi_i)R_y(\theta_i).
+```
 
 The allowed ranges are θ ∈ [0, π], φ ∈ [0, π/2], γ ∈ [0, π/2]. The notebook
 sequence `cx(i,j); rz(2*gamma,j); cx(i,j)` is a ZZ rotation, as follows from
@@ -58,17 +66,21 @@ separately before transferring its equilibrium claims to a program.
 `J` is diagonal, so its action on the initial all-zero basis state is only a
 global phase. Each local strategy then produces
 
-$$R_z(\phi_i)R_y(\theta_i)|0\rangle
+```math
+R_z(\phi_i)R_y(\theta_i)|0\rangle
 =e^{-i\phi_i/2}\cos(\theta_i/2)|0\rangle
-+e^{i\phi_i/2}\sin(\theta_i/2)|1\rangle.$$
++e^{i\phi_i/2}\sin(\theta_i/2)|1\rangle.
+```
 
 The final `J†` is also diagonal and changes no computational-basis probability.
 Consequently, for outcome b in player order,
 
-$$P(b)=\prod_i\begin{cases}
+```math
+P(b)=\prod_i\begin{cases}
 \cos^2(\theta_i/2),&b_i=0,\\
 \sin^2(\theta_i/2),&b_i=1.
-\end{cases}$$
+\end{cases}
+```
 
 This is independent of every φ and γ in the stated domain. It does not assert
 that the final state is separable for every γ; diagonal gates can change
