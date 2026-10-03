@@ -1,7 +1,7 @@
 {
   "package_version": "0.1.0",
   "circuit_model": "pairwise_zz_ry_rz",
-  "source_sha256": "a2aacf9d8fe67d65fb8a0779a2e0bf0db1c920ad230d98adf4ba1897049ed13f",
+  "source_sha256": "9757d6fc13d8558625a7be51f4a5216730f23c52be117158465c5bbf6bb8dcea",
   "method": "Exhaustive theta grid with exact phase-equivalence reduction; float64.",
   "results": [
     {

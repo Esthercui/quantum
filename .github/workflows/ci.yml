@@ -35,6 +35,11 @@ jobs:
       - run: uv run python -m pytest
       - run: uv run python scripts/reproduce.py --check
       - run: uv run python scripts/reproduce_experiments.py --check
+      - run: uv run python scripts/reproduce_optimization.py --check
+      - run: uv run python scripts/verify_research.py --full
+        env:
+          OPENBLAS_NUM_THREADS: "1"
+      - run: uv run python scripts/build_manuscript.py --check
       - run: |
           for notebook in notebooks/*.ipynb; do
             uv run python -m jupyter nbconvert --execute --to notebook \

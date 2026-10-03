@@ -1,0 +1,22 @@
+{
+  "renderer": {
+    "reportlab": "5.0.1",
+    "matplotlib": "3.11.2"
+  },
+  "sha256": {
+    "paper/manuscript.template.md": "c9d9af117467fa9261bff57545a82a93d7d6a793cbc6a184e5dbcdc2feb84c6d",
+    "paper/manuscript.md": "e46c2ba28c17c99c7234fc1820e1d066e0a2428bc646a88ff32fe82e4b82f06e",
+    "paper/research-paper.pdf": "ea51474c96f9a0987b08d7ef7a73a397fdc5b85ee73a1649df4649d03eb0af1a",
+    "paper/numerical-values.json": "caa0f31e027a862665dea4fd2b94a9a1c13483f311ae934337138455a1da6958",
+    "scripts/build_manuscript.py": "6c7b82411e55711ee06977a38cfd12fddaa270d6d2a9fbfff584f9b5e71eaf09",
+    "paper/figures/coordination-curve.png": "826dafda9fd7d36521b06afa387bf983236ebc1a2f5c1f540fce294ff471ec55",
+    "paper/figures/ewl-runtime.png": "53f1fdfc28083413144ff07809edc2cccea4a2a3ec85773f67ec952be01f9fc8",
+    "paper/figures/qaoa-landscape.png": "8c907f48c80c3bdb0177ea32ca6784f41a94fbeb1fb776ce1962fa24091b2822",
+    "paper/figures/strategy-matrix.png": "1b5271cc26814422af5401e9142ceca053978c66220250700bfd2cd2f1565df6",
+    "results/ewl-k2.json": "ab1204b365f588f612822e05ba7f64eb821925c3acbaf482ee319380fb2827ec",
+    "results/ewl-k3.json": "f33cb509195008b07478490e4c4c14c0b5bffed9a100184a2c2c1daf8726d4d7",
+    "results/ewl-k4.json": "bbad8c52aabfd8b9475e4ca9b33cc1da945d59c413d00d2bb3804fd56af7d550",
+    "results/optimization.json": "8e14a05d0dd0f7a2c6ac9a6320f40daa9db07d287111abfbfbda8a9501ad2225",
+    "results/experiments.json": "1eb33c99a06317aac94a22f78cdc84d3e7fc0f0b6b0cbf7d52c05a11304f771f"
+  }
+}

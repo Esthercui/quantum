@@ -1,4 +1,8 @@
-"""Prisoner's Dilemma payoffs and pure Nash searches for k = 2, 3, 4."""
+"""Classical payoffs and the diagonal-ZZ compatibility API.
+
+Use quantum_pd.ewl for the manuscript's EWL circuit and quantum_pd.ewl_search
+for full-grid enumeration and continuous response certificates.
+"""
 
 from .game import classical_payoff, expected_payoff, probabilities, statevector
 from .search import classical_nash, pure_nash_mask, search_grid

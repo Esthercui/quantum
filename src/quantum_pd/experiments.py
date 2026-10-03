@@ -56,6 +56,41 @@ def qaoa_outcomes(players: int, gamma: float, beta: float) -> dict:
     }
 
 
+def optimize_qaoa(players: int) -> dict:
+    """Replay the original COBYLA settings with deterministic statevector payoffs.
+
+    Retains the original initial points and maximum of 100 evaluations.
+    The returned value is attained by this local run, not a global-optimum claim.
+    """
+    validate_players(players)
+    try:
+        from scipy.optimize import minimize
+    except ImportError as exc:
+        raise ImportError("QAOA optimization needs python -m pip install -e '.[verify]'") from exc
+    initial = [0.5, 0.5] if players == 2 else [0.7, 1.0]
+    result = minimize(
+        lambda angles: -sum(qaoa_outcomes(players, *angles)["payoffs"]),
+        initial,
+        method="COBYLA",
+        options={"maxiter": 100},
+    )
+    return {
+        "players": players,
+        "method": "COBYLA",
+        "initial_angles": initial,
+        "max_evaluations": 100,
+        "gamma": float(result.x[0]),
+        "beta": float(result.x[1]),
+        "converged": bool(result.success),
+        "evaluations": int(result.nfev),
+        "termination": str(result.message),
+        "payoff_model": "pairwise",
+        "classical_nash_payoff_per_player": players - 1,
+        "shots": 0,
+        **qaoa_outcomes(players, *result.x),
+    }
+
+
 def classical_match(probability_a: float, probability_b: float) -> float:
     """Two independent binary choices; inputs are probabilities of spot zero."""
     if not all(np.isfinite(p) and 0 <= p <= 1 for p in (probability_a, probability_b)):

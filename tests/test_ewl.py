@@ -50,7 +50,7 @@ def test_unitarity_and_normalization():
 
 @pytest.mark.parametrize(
     "angles,gamma",
-    [([C, D, Q], pi / 2), ([(0, -0.1), C], 0), ([C, Q], np.nan), ([C, Q], -1)],
+    [([C, D, Q, C, D], pi / 2), ([(0, -0.1), C], 0), ([C, Q], np.nan), ([C, Q], -1)],
 )
 def test_invalid_inputs(angles, gamma):
     with pytest.raises(ValueError):

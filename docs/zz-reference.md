@@ -1,6 +1,6 @@
 # ZZ circuit reference
 
-This circuit benchmark supports the `quantum-pd` CLI and `search_grid` API for
+This circuit benchmark supports the `quantum-pd --circuit zz` CLI and `search_grid` API for
 two to four players. Its gate sequence is:
 
 ```math
@@ -17,7 +17,7 @@ sequence `cx(i,j); rz(2*gamma,j); cx(i,j)` is a ZZ rotation, as follows from
 [IBM's RZZ matrix](https://quantum.cloud.ibm.com/docs/en/api/qiskit/qiskit.circuit.library.RZZGate).
 At γ = π/2, each pair gate is `-i Z⊗Z`.
 
-Use `quantum_pd.ewl` for the [two-player EWL game](methods.md#two-player-ewl-game).
+Use `quantum_pd.ewl` for the [EWL game](methods.md#two-player-ewl-game).
 The probability reduction below applies specifically to this ZZ circuit.
 
 ## Exact reduction of the measurement probabilities

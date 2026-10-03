@@ -42,6 +42,11 @@ def compute_results() -> dict:
                 "beta_points": 7,
                 "classical_pairwise_nash_payoff": players - 1,
                 "best_grid_point": best,
+                "gamma_values": np.linspace(0, pi / 2, 7).tolist(),
+                "beta_values": np.linspace(0, pi, 7).tolist(),
+                "mean_payoff_grid_gamma_then_beta": np.array([c["mean_payoff"] for c in candidates])
+                .reshape(7, 7)
+                .tolist(),
             }
         )
 
@@ -63,6 +68,18 @@ def compute_results() -> dict:
             "or historical timing replay."
         ),
         "two_player_ewl": ewl,
+        "coordination_curve": [
+            {
+                "p_a": float(p),
+                "p_b": 0.2,
+                "angle_difference": float((p - 0.2) * pi / 1.6),
+                "classical_match": classical_match(float(p), 0.2),
+                "quantum_match": float(
+                    sum(schelling_probabilities((p - 0.2) * pi / 1.6, 0)[[0, 3]])
+                ),
+            }
+            for p in np.linspace(0.2, 1, 41)
+        ],
         "qaoa_7x7_checks": qaoa,
         "schelling_binary_checks": schelling,
         "schelling_four_spots": {

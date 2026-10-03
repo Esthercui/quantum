@@ -68,7 +68,7 @@ u_0\bigl(U(\theta,\phi),Q\bigr)
 
 By symmetry the same holds for player 1. This establishes `(Q, Q)` as a Nash
 equilibrium throughout the stated strategy family. The notebook also enumerates
-all 14,400 joint profiles on the 15 × 8 grid. Phase angles are fully enumerated.
+all 14,400 two-player joint profiles on the 15 × 8 grid. Phase angles are fully enumerated.
 The analytical bound concerns this strategy family and this two-player game.
 
 ## Nash test and player ordering
@@ -88,13 +88,47 @@ Player i controls qubit i. At statevector index x, their measured action is
 see [IBM's bit-ordering guide](https://quantum.cloud.ibm.com/docs/en/guides/bit-ordering).
 The payoff vector always runs from player 0 upward.
 
-## Multiplayer circuit benchmark
+## All-pairs multiplayer extension
 
-The `game` module, `search_grid`, and `quantum-pd` CLI evaluate the pairwise ZZ
-circuit for k = 2–4. Its gate definition, exact probability reduction, grid
-sizes, and computational cost are given in the [ZZ reference](zz-reference.md).
-The reduction is specific to that circuit. The EWL example uses its own complete
-payoff tensor with the general Nash test.
+For k = 3,4 the same local strategy matrix is used, and the entangler is defined as:
+
+```math
+J_k=\prod_{i\lt j}\exp(-i\gamma D_iD_j/2),\qquad\gamma=\pi/2.
+```
+
+This is the specific extension studied here. All pair gates commute. The Nash
+study uses collective payoffs for both classical and EWL results. Full grids are
+15 × 8 per player for k = 2,3 and 11 × 6 for k = 4, including every phase value.
+The saved results use an absolute tolerance of 1e-3 and also pass at 1e-10.
+
+For each grid candidate, `ewl_search.best_response` fixes the opponents and writes
+`U = a I + b D + c Q` with nonnegative coefficients on the unit sphere. Payoff
+is a real symmetric 3 × 3 quadratic form. All seven nonempty coordinate supports
+are checked for feasible eigenvectors; their largest attained value is the best
+continuous response. [Appendix B](../paper/manuscript.md#appendix-b-continuous-unilateral-best-responses)
+gives the argument, including repeated eigenvalues. Tests verify that returned
+angles attain the bound and that dense sampled deviations never exceed it.
+
+The grids contain 1, 1, and 433 certified angle profiles. At k = 4 these represent
+13 profiles after identical D operations are counted once. All-Q yields payoff
+3 per player for each k; asymmetric four-player equilibria yield permutations
+of (5,2.5,2.5,2.5). At k = 3, the off-grid profile with every player at
+`U(0,π/4)` pays 3.25 each and is also continuously stable. Thus the returned
+profiles are certified, while the finite grids do not exhaust the continuous
+space.
+
+Against all other players holding Q, a deviator's collective payoff is:
+
+```math
+u_i=\begin{cases}3c^2+a^2,&k\text{ even},\\3c^2+b^2,&k\text{ odd},\end{cases}
+\qquad a^2+b^2+c^2=1.
+```
+
+Both expressions are at most 3, proving all-Q stability in the specified family.
+D earns 0 at k = 2,4 and 1 at k = 3 against the remaining Q players.
+
+The original diagonal [ZZ benchmark](zz-reference.md) remains separately named.
+Its phase reduction is specific to that circuit and is not used for EWL.
 
 ## Variational payoff optimization
 
@@ -102,8 +136,11 @@ payoff tensor with the general Nash test.
 ZZ layer, then applies RX mixing. For depth one, each pair uses
 `cx(i,j); rz(2*gamma,j); cx(i,j)`, followed by `rx(2*beta)` on each qubit.
 The examples evaluate aggregate pairwise payoff over a 7 × 7 parameter grid.
-This is a payoff landscape; a parameter optimum is evaluated separately from
-individual-player Nash incentives.
+A separate COBYLA run retains the original starts, (0.5,0.5) for k = 2 and
+(0.7,1.0) for k = 3,4, and a 100-evaluation cap. Exact statevector objectives
+give attained mean payoffs 2.5000, 4.6667, 6.7500 against matched summed-pairwise
+baselines 1,2,3. The 7 × 7 landscape, a local optimizer result, and individual
+Nash stability answer separate questions. No global optimizer maximum is claimed.
 
 ## Schelling coordination
 
@@ -126,5 +163,8 @@ different classical resource and can also provide perfect coordination.
 Maintained examples use float64 statevector calculations without shot sampling.
 Inputs and angle domains are validated. `results/experiments.json` records the
 EWL, variational, and coordination examples; `results/reference.json` records
-the ZZ benchmark with its source digest. The reproduction scripts regenerate
+the ZZ benchmark with its source digest. Files `results/ewl-k2.json` through
+`ewl-k4.json` hold the full EWL certificates; `results/optimization.json` stores
+local optimizer parameters and payoffs. Manuscript numerical text and tables
+are generated from those same files. The reproduction scripts regenerate
 these artifacts and provide `--check` for verification.

@@ -1,5 +1,6 @@
 """Verify EWL matrices against an independently assembled RYY/RZ/RY circuit."""
 
+from itertools import combinations
 from math import pi
 
 import numpy as np
@@ -13,17 +14,20 @@ from qiskit.quantum_info import Statevector  # noqa: E402
 
 
 @pytest.mark.parametrize("gamma", [0, 0.57, pi / 2])
-def test_ewl_matches_gate_sequence(gamma):
+@pytest.mark.parametrize("players", [2, 3, 4])
+def test_ewl_matches_gate_sequence(gamma, players):
     rng = np.random.default_rng(491)
     for _ in range(8):
-        angles = rng.random((2, 2)) * [pi, pi / 2]
-        circuit = qiskit.QuantumCircuit(2)
-        circuit.ryy(-gamma, 0, 1)
+        angles = rng.random((players, 2)) * [pi, pi / 2]
+        circuit = qiskit.QuantumCircuit(players)
+        for i, j in combinations(range(players), 2):
+            circuit.ryy(-gamma, i, j)
         for player, (theta, phi) in enumerate(angles):
             circuit.rz(-phi, player)
             circuit.ry(-theta, player)
             circuit.rz(-phi, player)
-        circuit.ryy(gamma, 0, 1)
+        for i, j in reversed(list(combinations(range(players), 2))):
+            circuit.ryy(gamma, i, j)
         assert_allclose(
             statevector(angles, gamma), Statevector.from_instruction(circuit).data, atol=1e-12
         )
