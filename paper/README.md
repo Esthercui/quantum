@@ -37,3 +37,12 @@ the paper; see Appendix A and the repository README for the commands.
 The grid counts describe sampled angle profiles. Continuous best-response
 certificates establish their stability within the specified strategy family;
 they do not claim a complete enumeration of continuous equilibria.
+
+## Manuscript formatting
+
+The PDF uses a conventional single-column layout: 12-point Times New Roman body
+text, one-inch margins, serif headings, plain ruled tables, and centered page
+numbers. Installed Times New Roman font files are used when available; otherwise
+the renderer uses the bundled STIX serif family. The build manifest records the
+actual font family and file hashes. Font files are not redistributed. Figures
+use matching serif labels and STIX mathematical symbols.

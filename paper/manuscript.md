@@ -6,7 +6,7 @@ Revised computational manuscript | 3 October 2026
 
 ## 1 Abstract
 
-This study examines how quantum strategy spaces change incentives in the Prisoner's Dilemma (PD) and how shared quantum states affect coordination. Classical enumeration, a depth-one variational ZZ/RX circuit, and an explicitly defined all-pairs extension of the Eisert-Wilkens-Lewenstein (EWL) game are simulated for two to four players. Under the collective PD payoff rule, the all-Q strategy profile is a Nash equilibrium with payoff 3 per player for k = 2, 3, and 4. The specified grids contain 1, 1, 433 equilibrium angle profiles, respectively; every returned profile passes a continuous unilateral-deviation check. At k = 4, these comprise 13 profiles after removing repeated parameterizations of the same D operation, including asymmetric payoff patterns. The results therefore support cooperative quantum equilibria without an even-versus-odd restriction on their existence. Variational optimization attains mean summed-pairwise payoffs of 2.5000, 4.6667, 6.7500, compared with matched classical Nash baselines of 1, 2, and 3. Bell-pair coordination achieves ideal match probability 1 for equal local rotations and follows a cosine-squared dependence on their difference. These are classical statevector simulations of specified quantum protocols; they establish neither a quantum computational speedup nor an operational policy or hardware advantage.
+This study examines how quantum strategies change classical game-theory incentives, such as the cooperation breakdown in multiplayer Prisoner's Dilemma, and support Nash equilibria unavailable in the classical action game. Using a QAOA-style variational circuit and entangled Eisert-Wilkens-Lewenstein (EWL) circuits with an explicit all-pairs extension, we simulate two- to four-player PD and show that variational optimization increases expected payoff relative to matched classical Nash baselines, while EWL circuits support cooperative Q equilibria at k = 2, 3, and 4, where the corresponding classical action game predicts universal defection. Our four-player EWL grid sweep evaluates approximately 19 million profiles and identifies cooperative and asymmetric equilibria. In the Schelling Point Game, shared Bell states increase ideal coordination from 50% for independent uniform choices to 100% under equal local rotations. Although quantum strategies expand the available actions, these results are obtained through classical statevector simulation and do not establish a computational speedup. Building on prior work (e.g., Eisert et al.), this study expands the Nash search to a specified multiplayer model, records simulation runtime, and explores coordination models motivated by trade, logistics, and distributed systems.
 
 ## 2 Introduction
 
@@ -128,11 +128,15 @@ Table 1 defines each comparison. A shared quantum rotation leaves the local meas
 | Two, pi/2 difference | Not paired | pi/2, 0 |
 | Four, unbiased | Uniform independent | Two Bell pairs |
 
+Table 1. Classical probability settings and quantum rotation settings for the coordination experiments.
+
 ## 4 Results
 
 ### 4.1 Prisoner's Dilemma
 
 ### 4.1.1 Quantitative Outcomes
+
+The retained grids contain 1, 1, 433 equilibrium angle profiles for k = 2, 3, and 4, respectively.
 
 | k | Grid / player | Joint profiles | Grid NE | Continuous certified | All-Q payoff |
 | --- | --- | --- | --- | --- | --- |
@@ -149,6 +153,8 @@ For all-Q, a deviator's collective payoff has a simple form. With the coefficien
 At k = 4, 1 grid profile is all-Q. The other 432 profiles are permutations of (C, U(π/2,π/2), D, D), including the six redundant φ labels for each D. They pay 5 to the U(π/2,π/2) player and 2.5 to each other player. Removing those identical D parameterizations leaves 12 asymmetric profiles plus all-Q, or 13 in total. These are pure unitary strategies with probabilistic outcomes. The existence of all-Q does not imply selection or uniqueness of cooperative play.
 
 The continuous three-player strategy space contains equilibria that the 15-by-8 grid does not sample. As a direct check, all players using U(0,π/4) receive 3.25 each and pass the same continuous response certificate. This profile is outside the phase grid and is not included in the grid count in Table 2a.
+
+The local variational runs attain mean payoffs of 2.5000, 4.6667, 6.7500 for k = 2, 3, and 4, respectively.
 
 | k | Mean payoff | Matched baseline | Gain | C fraction | CX gates |
 | --- | --- | --- | --- | --- | --- |
@@ -197,7 +203,7 @@ The unbiased Bell-pair protocol gives match probability 1, compared with 0.5 for
 
 The four-spot circuit before optional inversion contains two H gates and two CX gates, followed by four measurements. Including the inverse gives eight unitary operations, of which four are CX, plus four measurements. These ideal circuits provide a compact test bed for coordination; no noisy-device success probability is inferred. Shared classical randomness is capable of perfect matching as well, so the reported improvement is specifically relative to independent choices.
 
-## 5 Future Works and Limitations
+## 5 Future Work and Limitations
 
 ### 5.1 Prisoner's Dilemma
 

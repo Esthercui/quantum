@@ -19,6 +19,38 @@ def digest(path):
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
+def academic_fonts():
+    """Use installed Times New Roman, with Matplotlib's STIX as a portable fallback."""
+    import matplotlib.font_manager as fm
+
+    mac_fonts = Path("/System/Library/Fonts/Supplemental")
+    names = ["", " Bold", " Italic", " Bold Italic"]
+    paths = [mac_fonts / f"Times New Roman{suffix}.ttf" for suffix in names]
+    if all(path.is_file() for path in paths):
+        return "Times New Roman", paths
+    try:
+        paths = [
+            Path(
+                fm.findfont(
+                    fm.FontProperties(family="Times New Roman", weight=w, style=s),
+                    fallback_to_default=False,
+                )
+            )
+            for w, s in [
+                ("normal", "normal"),
+                ("bold", "normal"),
+                ("normal", "italic"),
+                ("bold", "italic"),
+            ]
+        ]
+        return "Times New Roman", paths
+    except ValueError:
+        root = Path(fm.findfont("STIXGeneral")).parent
+        return "STIXGeneral", [
+            root / f"STIXGeneral{suffix}.ttf" for suffix in ["", "Bol", "Italic", "BolIta"]
+        ]
+
+
 def table(headers, rows):
     return "\n".join(
         [
@@ -153,12 +185,17 @@ def figures(ewl, experiments):
     import matplotlib
 
     matplotlib.use("Agg")
+    import matplotlib.font_manager as fm
     import matplotlib.pyplot as plt
     import numpy as np
 
+    family, paths = academic_fonts()
+    for path in paths:
+        fm.fontManager.addfont(path)
     plt.rcParams.update(
         {
-            "font.family": "DejaVu Sans",
+            "font.family": family,
+            "mathtext.fontset": "stix",
             "font.size": 10,
             "axes.spines.top": False,
             "axes.spines.right": False,
@@ -186,7 +223,7 @@ def figures(ewl, experiments):
     plt.close(fig)
     fig, ax = plt.subplots(figsize=(6.3, 2.8), layout="constrained")
     times = [r["execution"]["grid_seconds"] for r in ewl]
-    ax.plot([2, 3, 4], times, "o-", color="#245d80", lw=2)
+    ax.plot([2, 3, 4], times, "o-", color="black", lw=1.2)
     ax.set(
         yscale="log",
         xticks=[2, 3, 4],
@@ -212,8 +249,8 @@ def figures(ewl, experiments):
     )
     fig.colorbar(mesh, ax=ax, label="Mean summed-pairwise payoff")
     ax.set(
-        xlabel="gamma (radians)",
-        ylabel="beta (radians)",
+        xlabel=r"$\gamma$ (radians)",
+        ylabel=r"$\beta$ (radians)",
         title="Three-player ZZ/RX payoff landscape",
     )
     fig.savefig(folder / "qaoa-landscape.png")
@@ -223,19 +260,20 @@ def figures(ewl, experiments):
     ax.plot(
         [r["p_a"] for r in curve],
         [r["quantum_match"] for r in curve],
-        color="#a65121",
+        color="black",
         label="Bell pair, direct measurement",
-        lw=2,
+        lw=1.4,
     )
     ax.plot(
         [r["p_a"] for r in curve],
         [r["classical_match"] for r in curve],
-        color="#245d80",
+        color="0.4",
+        linestyle="--",
         label="Independent classical choices",
-        lw=2,
+        lw=1.4,
     )
     ax.set(
-        xlabel="Classical comparison parameter pA (pB = 0.2)",
+        xlabel=r"Classical comparison parameter $p_A$ ($p_B = 0.2$)",
         ylabel="Match probability",
         ylim=(0, 1.06),
     )
@@ -252,7 +290,7 @@ def render_pdf(text):
     import matplotlib.font_manager as fm
     from matplotlib.mathtext import math_to_image
     from reportlab.lib import colors
-    from reportlab.lib.enums import TA_CENTER, TA_LEFT
+    from reportlab.lib.enums import TA_CENTER, TA_JUSTIFY, TA_LEFT
     from reportlab.lib.pagesizes import letter
     from reportlab.lib.styles import ParagraphStyle, getSampleStyleSheet
     from reportlab.pdfbase import pdfmetrics
@@ -269,34 +307,34 @@ def render_pdf(text):
         TableStyle,
     )
 
-    fontroot = Path(fm.findfont("DejaVu Serif")).parent
-    for name, file in [
-        ("Body", "DejaVuSerif.ttf"),
-        ("BodyBold", "DejaVuSerif-Bold.ttf"),
-        ("Head", "DejaVuSans.ttf"),
-        ("HeadBold", "DejaVuSans-Bold.ttf"),
-    ]:
-        pdfmetrics.registerFont(TTFont(name, str(fontroot / file)))
+    _, fontpaths = academic_fonts()
+    for name, path in zip(
+        ["Body", "BodyBold", "BodyItalic", "BodyBoldItalic"], fontpaths, strict=True
+    ):
+        pdfmetrics.registerFont(TTFont(name, str(path)))
     pdfmetrics.registerFontFamily(
-        "Body", normal="Body", bold="BodyBold", italic="Body", boldItalic="BodyBold"
+        "Body", normal="Body", bold="BodyBold", italic="BodyItalic", boldItalic="BodyBoldItalic"
     )
     styles = getSampleStyleSheet()
     styles.add(
         ParagraphStyle(
             name="PaperBody",
             fontName="Body",
-            fontSize=10.2,
-            leading=14.7,
-            alignment=TA_LEFT,
-            spaceAfter=8,
+            fontSize=12,
+            leading=15,
+            alignment=TA_JUSTIFY,
+            spaceAfter=6,
+            splitLongWords=False,
+            allowWidows=False,
+            allowOrphans=False,
         )
     )
     styles.add(
         ParagraphStyle(
             name="PaperTitle",
-            fontName="HeadBold",
-            fontSize=18,
-            leading=23,
+            fontName="BodyBold",
+            fontSize=16,
+            leading=19,
             alignment=TA_CENTER,
             spaceAfter=14,
         )
@@ -304,41 +342,57 @@ def render_pdf(text):
     styles.add(
         ParagraphStyle(
             name="PaperH1",
-            fontName="HeadBold",
+            fontName="BodyBold",
             fontSize=13,
             leading=17,
-            spaceBefore=14,
-            spaceAfter=8,
+            spaceBefore=12,
+            spaceAfter=6,
             keepWithNext=True,
         )
     )
     styles.add(
         ParagraphStyle(
             name="PaperH2",
-            fontName="HeadBold",
-            fontSize=10.8,
-            leading=14,
-            spaceBefore=11,
-            spaceAfter=6,
+            fontName="BodyBold",
+            fontSize=12,
+            leading=15,
+            spaceBefore=9,
+            spaceAfter=5,
             keepWithNext=True,
         )
     )
     styles.add(
-        ParagraphStyle(name="CaptionText", fontName="Body", fontSize=9, leading=12, spaceAfter=10)
+        ParagraphStyle(name="CaptionText", fontName="Body", fontSize=10, leading=12, spaceAfter=8)
     )
-    styles.add(ParagraphStyle(name="TableText", fontName="Head", fontSize=8.2, leading=11))
+    styles.add(ParagraphStyle(name="TableText", fontName="Body", fontSize=9.5, leading=11.5))
+    styles.add(ParagraphStyle(name="TableHead", fontName="BodyBold", fontSize=9.5, leading=11.5))
     styles.add(
         ParagraphStyle(
-            name="TableHead", fontName="HeadBold", fontSize=8.2, leading=11, textColor=colors.white
+            name="Author",
+            fontName="Body",
+            fontSize=12,
+            leading=15,
+            alignment=TA_CENTER,
+            spaceAfter=6,
         )
     )
+    styles.add(
+        ParagraphStyle(
+            name="Reference",
+            parent=styles["PaperBody"],
+            fontSize=10.5,
+            leading=13,
+            alignment=TA_LEFT,
+        )
+    )
+    styles.add(ParagraphStyle(name="CodeProse", parent=styles["PaperBody"], alignment=TA_LEFT))
     doc = SimpleDocTemplate(
         str(PAPER / "research-paper.pdf"),
         pagesize=letter,
-        leftMargin=54,
-        rightMargin=54,
-        topMargin=48,
-        bottomMargin=48,
+        leftMargin=72,
+        rightMargin=72,
+        topMargin=72,
+        bottomMargin=72,
         title="Simulating Game Theory and Strategic Interactions Using Quantum Computing",
         author="Esther Cui",
         pageCompression=1,
@@ -349,8 +403,11 @@ def render_pdf(text):
     i = 0
 
     def para(s, style="PaperBody"):
+        s = s.replace("theta_A", "θ_A").replace("theta_B", "θ_B")
         escaped = html.escape(s)
         escaped = re.sub(r"([A-Za-z0-9]+)\^(-?[0-9]+|T)", r"\1<super>\2</super>", escaped)
+        escaped = re.sub(r"([A-Za-zθ]+)_([AB])\b", r"\1<sub>\2</sub>", escaped)
+        escaped = re.sub(r"^(Table \d+[a-z]?\.|Figure \d+\.)", r"<b>\1</b>", escaped)
         return Paragraph(escaped, styles[style])
 
     while i < len(lines):
@@ -425,19 +482,14 @@ def render_pdf(text):
             t.setStyle(
                 TableStyle(
                     [
-                        ("BACKGROUND", (0, 0), (-1, 0), colors.HexColor("#243d50")),
-                        (
-                            "ROWBACKGROUNDS",
-                            (0, 1),
-                            (-1, -1),
-                            [colors.HexColor("#eef3f6"), colors.white],
-                        ),
+                        ("LINEABOVE", (0, 0), (-1, 0), 0.8, colors.black),
+                        ("LINEBELOW", (0, 0), (-1, 0), 0.5, colors.black),
                         ("VALIGN", (0, 0), (-1, -1), "TOP"),
-                        ("LEFTPADDING", (0, 0), (-1, -1), 6),
-                        ("RIGHTPADDING", (0, 0), (-1, -1), 6),
-                        ("TOPPADDING", (0, 0), (-1, -1), 6),
-                        ("BOTTOMPADDING", (0, 0), (-1, -1), 6),
-                        ("LINEBELOW", (0, -1), (-1, -1), 0.4, colors.HexColor("#9aabb7")),
+                        ("LEFTPADDING", (0, 0), (-1, -1), 4),
+                        ("RIGHTPADDING", (0, 0), (-1, -1), 4),
+                        ("TOPPADDING", (0, 0), (-1, -1), 3.5),
+                        ("BOTTOMPADDING", (0, 0), (-1, -1), 3.5),
+                        ("LINEBELOW", (0, -1), (-1, -1), 0.8, colors.black),
                     ]
                 )
             )
@@ -446,7 +498,7 @@ def render_pdf(text):
             while j < len(lines) and not lines[j].strip():
                 j += 1
             if j < len(lines) and lines[j].startswith("Table "):
-                block.append(para(lines[j], "CaptionText"))
+                block.insert(0, para(lines[j], "CaptionText"))
                 i = j + 1
             story.append(KeepTogether(block))
         else:
@@ -460,15 +512,19 @@ def render_pdf(text):
                 parts.append(lines[i].strip())
                 i += 1
             value = " ".join(parts)
-            if value in ["Esther Cui", "Revised computational manuscript | 3 October 2026"]:
-                p = para(value, "CaptionText")
-                p.style = ParagraphStyle("center", parent=p.style, alignment=TA_CENTER)
-                story.append(p)
+            if value == "Esther Cui":
+                story.append(para(value, "Author"))
+            elif value == "Revised computational manuscript | 3 October 2026":
+                story.append(para("3 October 2026", "Author"))
             else:
                 story.append(
                     para(
                         value,
-                        "CaptionText" if value.startswith(("Table ", "Figure ")) else "PaperBody",
+                        "Reference"
+                        if re.match(r"\[\d+\]", value)
+                        else "CodeProse"
+                        if any(token in value for token in ("scripts/", "src/", "results/"))
+                        else "PaperBody",
                     )
                 )
 
@@ -505,10 +561,9 @@ def render_pdf(text):
 
     def page(canvas, doc):
         canvas.saveState()
-        canvas.setFont("Head", 8)
-        canvas.setFillColor(colors.HexColor("#5a6a75"))
-        canvas.drawString(54, 26, "Esther Cui  |  Quantum game simulations  |  Revised manuscript")
-        canvas.drawRightString(letter[0] - 54, 26, str(doc.page))
+        canvas.setFont("Body", 10)
+        canvas.setFillColor(colors.black)
+        canvas.drawCentredString(letter[0] / 2, 36, str(doc.page))
         canvas.restoreState()
 
     doc.build(story, onFirstPage=page, onLaterPages=page, canvasmaker=partial(Canvas, invariant=1))
@@ -550,6 +605,8 @@ def main():
                     "renderer": {
                         "reportlab": __import__("reportlab").Version,
                         "matplotlib": __import__("matplotlib").__version__,
+                        "body_font": academic_fonts()[0],
+                        "font_sha256": {p.name: digest(p) for p in academic_fonts()[1]},
                     },
                     "sha256": {str(p.relative_to(ROOT)): digest(p) for p in paths},
                 },
