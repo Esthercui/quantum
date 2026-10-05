@@ -11,11 +11,11 @@
     }
   },
   "sha256": {
-    "paper/manuscript.template.md": "91c8b988af20a7eaa2525d02bb6371f8b7587ad20760542bed96364d5fee73a8",
-    "paper/manuscript.md": "5062ad25a198c50fbd83e2ac514505f988b0df2ed9e4b73cc70d16d373715108",
-    "paper/research-paper.pdf": "54cafa650610c0ef8af487c2bc5d7f3ecdab99c43863120ba1f3012391d623e9",
+    "paper/manuscript.template.md": "a0bd3a7291ba9fef9e0b36acf204f18210755df35cab54f1e0e908996206f81b",
+    "paper/manuscript.md": "e377c40236e2545e2090bb0b711ef91f8c9f9d8f6a4ff41c7806279d973e1f49",
+    "paper/research-paper.pdf": "62adbeb9c7201acf1d7f5aee0135bad7ed41e689bf4d54169223c7b1523febee",
     "paper/numerical-values.json": "caa0f31e027a862665dea4fd2b94a9a1c13483f311ae934337138455a1da6958",
-    "scripts/build_manuscript.py": "660efaf5de10f91b6315dd3d4bc34a37b0a6eb7819a23680adc87f8b1e24de7e",
+    "scripts/build_manuscript.py": "13f37b564d044b228c63bd429cfffae7a80662337d547953cfc596cf4a75f34c",
     "paper/figures/coordination-curve.png": "8f36c9f90277d71d7a56a3a3b1547e199416112b677212c1b80817947c235b52",
     "paper/figures/ewl-runtime.png": "623a523fab67f214fbbeae0162903d91d830a976b36a560f394d0c971f7e56a0",
     "paper/figures/qaoa-landscape.png": "52de204e7b9697214697fde2390add8c82445677b57aad421b01f32c2532e909",

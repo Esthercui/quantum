@@ -514,8 +514,8 @@ def render_pdf(text):
             value = " ".join(parts)
             if value == "Esther Cui":
                 story.append(para(value, "Author"))
-            elif value == "Revised computational manuscript | 3 October 2026":
-                story.append(para("3 October 2026", "Author"))
+            elif value == "Original manuscript: Spring 2025 | Edited and recomputed: Fall 2026":
+                story.append(para(value, "Author"))
             else:
                 story.append(
                     para(

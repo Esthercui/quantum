@@ -2,7 +2,7 @@
 
 Esther Cui
 
-Revised computational manuscript | 3 October 2026
+Original manuscript: Spring 2025 | Edited and recomputed: Fall 2026
 
 ## 1 Abstract
 

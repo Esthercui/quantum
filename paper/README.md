@@ -4,7 +4,7 @@
 
 **Simulating Game Theory and Strategic Interactions Using Quantum Computing**
 
-Esther Cui · Revised computational manuscript, October 2026
+Esther Cui · Original manuscript: Spring 2025 · Edited and recomputed: Fall 2026
 
 The manuscript reports the explicit all-pairs EWL model through four players,
 the original depth-one variational circuit, and the Bell-pair coordination
