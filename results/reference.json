@@ -1,0 +1,446 @@
+{
+  "package_version": "0.1.0",
+  "circuit_model": "pairwise_zz_ry_rz",
+  "source_sha256": "9757d6fc13d8558625a7be51f4a5216730f23c52be117158465c5bbf6bb8dcea",
+  "method": "Exhaustive theta grid with exact phase-equivalence reduction; float64.",
+  "results": [
+    {
+      "schema_version": 1,
+      "circuit": "pairwise-zz-ry-rz",
+      "players": 2,
+      "payoff_model": "collective",
+      "theta_points": 15,
+      "phi_points": 8,
+      "theta_range_radians": [
+        0.0,
+        3.141592653589793
+      ],
+      "phi_range_radians": [
+        0.0,
+        1.5707963267948966
+      ],
+      "gamma_range_radians": [
+        0.0,
+        1.5707963267948966
+      ],
+      "absolute_tolerance": 1e-10,
+      "full_angle_profiles": 14400,
+      "evaluated_representatives": 225,
+      "phase_multiplicity_per_representative": 64,
+      "equilibrium_classes": [
+        {
+          "theta_indices": [
+            14,
+            14
+          ],
+          "representative_angles": [
+            [
+              3.141592653589793,
+              0.0
+            ],
+            [
+              3.141592653589793,
+              0.0
+            ]
+          ],
+          "payoffs": [
+            1.0,
+            1.0
+          ],
+          "unilateral_regrets": [
+            0.0,
+            0.0
+          ],
+          "represented_angle_profiles": 64
+        }
+      ],
+      "equilibrium_angle_profiles": 64,
+      "classical_equilibria": [
+        {
+          "actions": [
+            1,
+            1
+          ],
+          "payoffs": [
+            1.0,
+            1.0
+          ]
+        }
+      ]
+    },
+    {
+      "schema_version": 1,
+      "circuit": "pairwise-zz-ry-rz",
+      "players": 3,
+      "payoff_model": "collective",
+      "theta_points": 15,
+      "phi_points": 8,
+      "theta_range_radians": [
+        0.0,
+        3.141592653589793
+      ],
+      "phi_range_radians": [
+        0.0,
+        1.5707963267948966
+      ],
+      "gamma_range_radians": [
+        0.0,
+        1.5707963267948966
+      ],
+      "absolute_tolerance": 1e-10,
+      "full_angle_profiles": 1728000,
+      "evaluated_representatives": 3375,
+      "phase_multiplicity_per_representative": 512,
+      "equilibrium_classes": [
+        {
+          "theta_indices": [
+            14,
+            14,
+            14
+          ],
+          "representative_angles": [
+            [
+              3.141592653589793,
+              0.0
+            ],
+            [
+              3.141592653589793,
+              0.0
+            ],
+            [
+              3.141592653589793,
+              0.0
+            ]
+          ],
+          "payoffs": [
+            1.0,
+            1.0,
+            1.0
+          ],
+          "unilateral_regrets": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "represented_angle_profiles": 512
+        }
+      ],
+      "equilibrium_angle_profiles": 512,
+      "classical_equilibria": [
+        {
+          "actions": [
+            1,
+            1,
+            1
+          ],
+          "payoffs": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        }
+      ]
+    },
+    {
+      "schema_version": 1,
+      "circuit": "pairwise-zz-ry-rz",
+      "players": 4,
+      "payoff_model": "collective",
+      "theta_points": 11,
+      "phi_points": 6,
+      "theta_range_radians": [
+        0.0,
+        3.141592653589793
+      ],
+      "phi_range_radians": [
+        0.0,
+        1.5707963267948966
+      ],
+      "gamma_range_radians": [
+        0.0,
+        1.5707963267948966
+      ],
+      "absolute_tolerance": 1e-10,
+      "full_angle_profiles": 18974736,
+      "evaluated_representatives": 14641,
+      "phase_multiplicity_per_representative": 1296,
+      "equilibrium_classes": [
+        {
+          "theta_indices": [
+            10,
+            10,
+            10,
+            10
+          ],
+          "representative_angles": [
+            [
+              3.141592653589793,
+              0.0
+            ],
+            [
+              3.141592653589793,
+              0.0
+            ],
+            [
+              3.141592653589793,
+              0.0
+            ],
+            [
+              3.141592653589793,
+              0.0
+            ]
+          ],
+          "payoffs": [
+            1.0,
+            1.0,
+            1.0,
+            1.0
+          ],
+          "unilateral_regrets": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "represented_angle_profiles": 1296
+        }
+      ],
+      "equilibrium_angle_profiles": 1296,
+      "classical_equilibria": [
+        {
+          "actions": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "payoffs": [
+            1.0,
+            1.0,
+            1.0,
+            1.0
+          ]
+        }
+      ]
+    },
+    {
+      "schema_version": 1,
+      "circuit": "pairwise-zz-ry-rz",
+      "players": 2,
+      "payoff_model": "pairwise",
+      "theta_points": 15,
+      "phi_points": 8,
+      "theta_range_radians": [
+        0.0,
+        3.141592653589793
+      ],
+      "phi_range_radians": [
+        0.0,
+        1.5707963267948966
+      ],
+      "gamma_range_radians": [
+        0.0,
+        1.5707963267948966
+      ],
+      "absolute_tolerance": 1e-10,
+      "full_angle_profiles": 14400,
+      "evaluated_representatives": 225,
+      "phase_multiplicity_per_representative": 64,
+      "equilibrium_classes": [
+        {
+          "theta_indices": [
+            14,
+            14
+          ],
+          "representative_angles": [
+            [
+              3.141592653589793,
+              0.0
+            ],
+            [
+              3.141592653589793,
+              0.0
+            ]
+          ],
+          "payoffs": [
+            1.0,
+            1.0
+          ],
+          "unilateral_regrets": [
+            0.0,
+            0.0
+          ],
+          "represented_angle_profiles": 64
+        }
+      ],
+      "equilibrium_angle_profiles": 64,
+      "classical_equilibria": [
+        {
+          "actions": [
+            1,
+            1
+          ],
+          "payoffs": [
+            1.0,
+            1.0
+          ]
+        }
+      ]
+    },
+    {
+      "schema_version": 1,
+      "circuit": "pairwise-zz-ry-rz",
+      "players": 3,
+      "payoff_model": "pairwise",
+      "theta_points": 15,
+      "phi_points": 8,
+      "theta_range_radians": [
+        0.0,
+        3.141592653589793
+      ],
+      "phi_range_radians": [
+        0.0,
+        1.5707963267948966
+      ],
+      "gamma_range_radians": [
+        0.0,
+        1.5707963267948966
+      ],
+      "absolute_tolerance": 1e-10,
+      "full_angle_profiles": 1728000,
+      "evaluated_representatives": 3375,
+      "phase_multiplicity_per_representative": 512,
+      "equilibrium_classes": [
+        {
+          "theta_indices": [
+            14,
+            14,
+            14
+          ],
+          "representative_angles": [
+            [
+              3.141592653589793,
+              0.0
+            ],
+            [
+              3.141592653589793,
+              0.0
+            ],
+            [
+              3.141592653589793,
+              0.0
+            ]
+          ],
+          "payoffs": [
+            2.0,
+            2.0,
+            2.0
+          ],
+          "unilateral_regrets": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "represented_angle_profiles": 512
+        }
+      ],
+      "equilibrium_angle_profiles": 512,
+      "classical_equilibria": [
+        {
+          "actions": [
+            1,
+            1,
+            1
+          ],
+          "payoffs": [
+            2.0,
+            2.0,
+            2.0
+          ]
+        }
+      ]
+    },
+    {
+      "schema_version": 1,
+      "circuit": "pairwise-zz-ry-rz",
+      "players": 4,
+      "payoff_model": "pairwise",
+      "theta_points": 11,
+      "phi_points": 6,
+      "theta_range_radians": [
+        0.0,
+        3.141592653589793
+      ],
+      "phi_range_radians": [
+        0.0,
+        1.5707963267948966
+      ],
+      "gamma_range_radians": [
+        0.0,
+        1.5707963267948966
+      ],
+      "absolute_tolerance": 1e-10,
+      "full_angle_profiles": 18974736,
+      "evaluated_representatives": 14641,
+      "phase_multiplicity_per_representative": 1296,
+      "equilibrium_classes": [
+        {
+          "theta_indices": [
+            10,
+            10,
+            10,
+            10
+          ],
+          "representative_angles": [
+            [
+              3.141592653589793,
+              0.0
+            ],
+            [
+              3.141592653589793,
+              0.0
+            ],
+            [
+              3.141592653589793,
+              0.0
+            ],
+            [
+              3.141592653589793,
+              0.0
+            ]
+          ],
+          "payoffs": [
+            3.0,
+            3.0,
+            3.0,
+            3.0
+          ],
+          "unilateral_regrets": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "represented_angle_profiles": 1296
+        }
+      ],
+      "equilibrium_angle_profiles": 1296,
+      "classical_equilibria": [
+        {
+          "actions": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "payoffs": [
+            3.0,
+            3.0,
+            3.0,
+            3.0
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,87 @@
+{
+  "evaluation": "Exact statevector expectation; one local optimization per k.",
+  "source_sha256": {
+    "src/quantum_pd/experiments.py": "881a53865ac212609347b9c28dc5d4728494db1cb07870052e2e0a5310d80c90",
+    "src/quantum_pd/game.py": "c0f1c227bc3733be3fdce5b445476146076f1ff3f859fa71df4180176f189278"
+  },
+  "numpy": "2.5.3",
+  "qiskit": "2.5.2",
+  "scipy": "1.18.1",
+  "results": [
+    {
+      "players": 2,
+      "method": "COBYLA",
+      "initial_angles": [
+        0.5,
+        0.5
+      ],
+      "max_evaluations": 100,
+      "gamma": 2.3561414309168582,
+      "beta": 1.963492529071397,
+      "converged": true,
+      "evaluations": 39,
+      "termination": "Return from COBYLA because the trust region radius reaches its lower bound.",
+      "payoff_model": "pairwise",
+      "classical_nash_payoff_per_player": 1,
+      "shots": 0,
+      "payoffs": [
+        2.499999998575774,
+        2.499999998575774
+      ],
+      "mean_payoff": 2.499999998575774,
+      "cooperation_rate": 0.4999999999999999,
+      "cx_count_before_transpilation": 2
+    },
+    {
+      "players": 3,
+      "method": "COBYLA",
+      "initial_angles": [
+        0.7,
+        1.0
+      ],
+      "max_evaluations": 100,
+      "gamma": 1.8785597112183345,
+      "beta": 1.2630462829638485,
+      "converged": true,
+      "evaluations": 42,
+      "termination": "Return from COBYLA because the trust region radius reaches its lower bound.",
+      "payoff_model": "pairwise",
+      "classical_nash_payoff_per_player": 2,
+      "shots": 0,
+      "payoffs": [
+        4.666666665031974,
+        4.666666665031973,
+        4.666666665031974
+      ],
+      "mean_payoff": 4.666666665031974,
+      "cooperation_rate": 0.49999999999999983,
+      "cx_count_before_transpilation": 6
+    },
+    {
+      "players": 4,
+      "method": "COBYLA",
+      "initial_angles": [
+        0.7,
+        1.0
+      ],
+      "max_evaluations": 100,
+      "gamma": 0.7853709285407053,
+      "beta": 1.0275920117271613,
+      "converged": true,
+      "evaluations": 31,
+      "termination": "Return from COBYLA because the trust region radius reaches its lower bound.",
+      "payoff_model": "pairwise",
+      "classical_nash_payoff_per_player": 3,
+      "shots": 0,
+      "payoffs": [
+        6.749999998348628,
+        6.749999998348628,
+        6.7499999983486285,
+        6.749999998348628
+      ],
+      "mean_payoff": 6.749999998348628,
+      "cooperation_rate": 0.49999999999999967,
+      "cx_count_before_transpilation": 12
+    }
+  ]
+}
